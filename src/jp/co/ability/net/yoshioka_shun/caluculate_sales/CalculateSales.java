@@ -43,11 +43,13 @@ public class CalculateSales {
 			return;
 		}
 
+
 		String branchFile = args[0] + File.separator + "branch.lst";
 		createFile(branchFile,branchMap,branchCalculateMap);
 		String comFile = args[0] + File.separator + "commodity.lst";
 		createFile(comFile,commodityMap,commodityCalculateMap);
-	//public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, Long> calculateMap ){
+
+	//public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, String> calculateMap ){
 
 		try{
 			File file =new File(args[0],"branch.lst");
@@ -84,7 +86,6 @@ public class CalculateSales {
 		}
 
 
-
 		try{
 			combr = new BufferedReader(new FileReader(commodityfile));
 
@@ -115,7 +116,6 @@ public class CalculateSales {
 					return;
 			}
 		}
-
 
 
 		// ディレクトリの一覧を取得する
@@ -190,7 +190,6 @@ public class CalculateSales {
 				commodityCalculateMap.put(calculateList.get(1),calVal);
 
 
-
 				//合計金額が10桁超えた場合
 				if(branchVal > 1000000000 || calVal > 1000000000){
 
@@ -222,7 +221,6 @@ public class CalculateSales {
 	}
 
 
-
 	public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, Long> calculateMap ){
 		// List 生成 (ソート用)
     	List<Entry<String,Long>> entries =
@@ -248,7 +246,7 @@ public class CalculateSales {
 
 
 		}catch(IOException e){
-			//System.out.println("予期せぬエラーが発生しました");
+			System.out.println("予期せぬエラーが発生しました");
 			return false;
 		}finally{
 			try{
