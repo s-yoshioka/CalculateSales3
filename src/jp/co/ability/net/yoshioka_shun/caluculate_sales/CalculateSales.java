@@ -43,11 +43,11 @@ public class CalculateSales {
 			return;
 		}
 
-
 		String branchFile = args[0] + File.separator + "branch.lst";
 		createFile(branchFile,branchMap,branchCalculateMap);
 		String comFile = args[0] + File.separator + "commodity.lst";
 		createFile(comFile,commodityMap,commodityCalculateMap);
+	//public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, Long> calculateMap ){
 
 		try{
 			File file =new File(args[0],"branch.lst");
