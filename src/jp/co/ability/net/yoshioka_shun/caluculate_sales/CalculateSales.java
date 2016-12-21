@@ -24,13 +24,14 @@ public class CalculateSales {
 		//集計用のmapを作る(商品)
 		Map<String, Long> commodityCalculateMap = new HashMap<String,Long>();
 
-
-
-
-
 		BufferedReader br = null;
 
 		//支店定義ファイルが存在しません
+		File branchfile = new File(args[0], "branch.lst");
+		if(!branchfile.exists()){
+			System.out.println("支店定義ファイルが存在してません");
+			return;
+		}
 
 
 		try{
@@ -63,20 +64,23 @@ public class CalculateSales {
 				}
 			}catch(IOException e){
 				System.out.println("予期せぬエラーです");
+				return;
 			}
 		}
 
 		// commodityMapという名前のHashMapを用意する
-		 Map<String,String> commodityMap = new HashMap<String,String>();
-
-		 BufferedReader combr = null;
-
-		 //商品定義ファイルが存在しません
+		Map<String,String> commodityMap = new HashMap<String,String>();
+		BufferedReader combr = null;
 
 		try{
-			File file =new File(args[0],"commodity.lst");
-			FileReader fr =new FileReader(file);
-			combr = new BufferedReader(fr);
+			File commodityfile = new File(args[0], "commodity.lst");
+			 //商品定義ファイルが存在しません
+			if(!commodityfile.exists()){
+				System.out.println("商品定義ファイルが存在してません");
+				return;
+			}
+
+			combr = new BufferedReader(new FileReader(commodityfile));
 
 			String str;
 			while((str = combr.readLine()) != null){
@@ -102,6 +106,7 @@ public class CalculateSales {
 				}
 			}catch(IOException e){
 					System.out.println("予期せぬエラーです");
+					return;
 			}
 		}
 
@@ -198,6 +203,7 @@ public class CalculateSales {
         			}
         		}catch(IOException e){
         			System.out.println("予期せぬエラーです");
+        			return;
         		}
         	}
     	}
@@ -240,6 +246,7 @@ public class CalculateSales {
 				}
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 		}
 
@@ -279,6 +286,7 @@ public class CalculateSales {
 				}
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 		}
 	}
