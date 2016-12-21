@@ -19,12 +19,16 @@ public class CalculateSales {
 	public static void main (String args[]){
 		// branchMapという名前のHashMapを用意する
 		Map<String, String> branchMap = new HashMap<String, String>();
+		// commodityMapという名前のHashMapを用意する
+		Map<String,String> commodityMap = new HashMap<String,String>();
 		//集計用のmapを作る(支店）
 		Map<String, Long> branchCalculateMap =new HashMap<String, Long>();
 		//集計用のmapを作る(商品)
 		Map<String, Long> commodityCalculateMap = new HashMap<String,Long>();
 
+
 		BufferedReader br = null;
+		BufferedReader combr = null;
 
 		//支店定義ファイルが存在しません
 		File branchfile = new File(args[0], "branch.lst");
@@ -32,7 +36,18 @@ public class CalculateSales {
 			System.out.println("支店定義ファイルが存在してません");
 			return;
 		}
+		 //商品定義ファイルが存在しません
+		File commodityfile = new File(args[0], "commodity.lst");
+		if(!commodityfile.exists()){
+			System.out.println("商品定義ファイルが存在してません");
+			return;
+		}
 
+
+		String branchFile = args[0] + File.separator + "branch.lst";
+		createFile(branchFile,branchMap,branchCalculateMap);
+		String comFile = args[0] + File.separator + "commodity.lst";
+		createFile(comFile,commodityMap,commodityCalculateMap);
 
 		try{
 			File file =new File(args[0],"branch.lst");
@@ -68,18 +83,9 @@ public class CalculateSales {
 			}
 		}
 
-		// commodityMapという名前のHashMapを用意する
-		Map<String,String> commodityMap = new HashMap<String,String>();
-		BufferedReader combr = null;
+
 
 		try{
-			File commodityfile = new File(args[0], "commodity.lst");
-			 //商品定義ファイルが存在しません
-			if(!commodityfile.exists()){
-				System.out.println("商品定義ファイルが存在してません");
-				return;
-			}
-
 			combr = new BufferedReader(new FileReader(commodityfile));
 
 			String str;
@@ -208,87 +214,53 @@ public class CalculateSales {
         	}
     	}
 
+    	String fileName = args[0] + File.separator + "branch.out";
+    	createFile(fileName, branchMap, branchCalculateMap);
 
-    	// List 生成 (ソート用)（支店）
-    	List<Entry<String,Long>> branchEntries =
-				new ArrayList<Map.Entry<String,Long>>(branchCalculateMap.entrySet());
-		Collections.sort(branchEntries, new Comparator<Map.Entry<String,Long>>() {
+    	String comfileName = args[0] + File.separator + "commodity.out";
+    	createFile(comfileName,commodityMap,commodityCalculateMap);
+	}
+
+
+
+	public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, Long> calculateMap ){
+		// List 生成 (ソート用)
+    	List<Entry<String,Long>> entries =
+				new ArrayList<Map.Entry<String,Long>>(calculateMap.entrySet());
+		Collections.sort(entries, new Comparator<Map.Entry<String,Long>>() {
 
 			public int compare(Entry<String,Long> entry1, Entry<String,Long> entry2) {
 				return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
 			}
 		});
 
-		// 内容を表示(支店コード・支店名・金額)
-		for (Entry<String, Long> s : branchEntries) {
-			System.out.println( s.getKey() + "," + branchMap.get(s.getKey())+"," + s.getValue() + System.getProperty("line.separator"));
-		}
 
-		BufferedWriter branchbw =null;
+		BufferedWriter bw =null;
 
 		// 出力処理
 		try {
-			File file = new File(args[0], "branch.out");
+			File file = new File( fileName );
 			FileWriter fw = new FileWriter(file);
-			branchbw = new BufferedWriter(fw);
-			for(Entry<String,Long> s : branchEntries) {
-				branchbw.write(s.getKey() + "," + branchMap.get(s.getKey())+"," + s.getValue() + System.getProperty("line.separator"));
+			bw = new BufferedWriter(fw);
+			for(Entry<String,Long> s : entries) {
+				bw.write(s.getKey() + "," + nameMap.get(s.getKey())+"," + s.getValue() + System.getProperty("line.separator"));
 			}
 
 
 		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
-			return;
+			//System.out.println("予期せぬエラーが発生しました");
+			return false;
 		}finally{
 			try{
-				if(branchbw != null){
-					branchbw.close();
+				if(bw != null){
+					bw.close();
 				}
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
-				return;
+				return false;
 			}
 		}
-
-
-		// List 生成 (ソート用)（商品）
-		List<Entry<String,Long>> commodityEntries =
-				new ArrayList<Map.Entry<String,Long>>(commodityCalculateMap.entrySet());
-		Collections.sort(commodityEntries, new Comparator<Map.Entry<String,Long>>() {
-
-			public int compare(Entry<String,Long> entry1, Entry<String,Long> entry2) {
-				return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
-			}
-		});
-
-		 //内容を表示(商品コード・商品名・金額)
-		for (Entry<String,Long> s : commodityEntries) {
-			System.out.println( s.getKey() + "," + commodityMap.get(s.getKey())+"," + s.getValue() + System.getProperty("line.separator"));
-		}
-
-		BufferedWriter combw = null;
-		//出力処理
-		try{
-			File file = new File(args[0],"commodity.out");
-			FileWriter fw =new FileWriter(file);
-			combw  = new BufferedWriter(fw);
-			for(Entry<String,Long> s : commodityEntries) {
-				combw.write(s.getKey() + "," + commodityMap.get(s.getKey())+"," + s.getValue() + System.getProperty("line.separator"));
-			}
-
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
-			return;
-		}finally{
-			try{
-				if(combw != null){
-					combw.close();
-				}
-			}catch(IOException e){
-				System.out.println("予期せぬエラーが発生しました");
-				return;
-			}
-		}
+		return true;
 	}
 }
 
