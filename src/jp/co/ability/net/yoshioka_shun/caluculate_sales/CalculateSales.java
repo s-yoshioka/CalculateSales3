@@ -29,13 +29,13 @@ public class CalculateSales {
 		//支店定義ファイルが存在しません
 		File branchfile = new File(args[0], "branch.lst");
 		if(!branchfile.exists()){
-			System.out.println("支店定義ファイルが存在してません");
+			System.out.println("支店定義ファイルが存在しません");
 			return;
 		}
 		 //商品定義ファイルが存在しません
 		File commodityfile = new File(args[0], "commodity.lst");
 		if(!commodityfile.exists()){
-			System.out.println("商品定義ファイルが存在してません");
+			System.out.println("商品定義ファイルが存在しません");
 			return;
 		}
 
@@ -107,7 +107,7 @@ public class CalculateSales {
 				//合計金額が10桁超えた場合
 				if(branchVal > 1000000000 || calVal > 1000000000){
 
-					System.out.println("合計金額が10桁超えました");
+					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
         	}catch(IOException e){
