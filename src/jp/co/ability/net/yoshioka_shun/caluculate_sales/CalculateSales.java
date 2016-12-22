@@ -27,9 +27,6 @@ public class CalculateSales {
 		Map<String, Long> commodityCalculateMap = new HashMap<String,Long>();
 
 
-		BufferedReader br = null;
-		BufferedReader combr = null;
-
 		//支店定義ファイルが存在しません
 		File branchfile = new File(args[0], "branch.lst");
 		if(!branchfile.exists()){
@@ -47,7 +44,6 @@ public class CalculateSales {
     	if(!readFile(branchListFile,branchMap,branchCalculateMap,"^\\d{3}$","支店定義ファイル")){
     		System.out.println("予期せぬエラーが発生しました");
     		return;
-
     	}
 
     	String commodityListFile = args[0] + File.separator + "commodity.lst";
@@ -55,8 +51,6 @@ public class CalculateSales {
     		System.out.println("予期せぬエラーが発生しました");
     		return;
     	}
-
-
 
 
 		// ディレクトリの一覧を取得する
