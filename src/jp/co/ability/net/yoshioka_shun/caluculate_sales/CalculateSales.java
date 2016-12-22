@@ -27,7 +27,7 @@ public class CalculateSales {
 		Map<String, Long> commodityCalculateMap = new HashMap<String,Long>();
 
 		if(args.length !=1){
-			System.exit(1);
+			System.out.println("予期せぬエラーが発生しました");;
 		}
 		//支店定義ファイルが存在しません
 		File branchfile = new File(args[0], "branch.lst");
@@ -62,9 +62,6 @@ public class CalculateSales {
     			rcdList.add(files[i].getName());
     		}
     	}
-    	if((rcdList.get(0)) != ("^\\D$")){
-    		return;
-    	}
 
     	//連番チェック(リストを回す)
     	for(int i = 0; i < rcdList.size() ; i++){
@@ -75,6 +72,7 @@ public class CalculateSales {
     			return;
     		}
     	}
+
     	// 集計をしていく(リストを回す)
     	for(String fileName : rcdList) {
     		BufferedReader rcdbr = null;
@@ -88,6 +86,7 @@ public class CalculateSales {
 				ArrayList<String> calculateList = new ArrayList<String>();
 				while((s = rcdbr.readLine()) != null){
 					calculateList.add(s);
+
 				}
 				//支店コードが不正です
 				if(!branchCalculateMap.containsKey(calculateList.get(0))){
@@ -104,6 +103,10 @@ public class CalculateSales {
 					System.out.println(fileName + "のフォーマットが不正です");
 					return;
         		}
+				if(!calculateList.get(2).matches("^\\d{1,}$")){
+					System.out.println("予期せぬエラーが発生しました");
+					return;
+				}
 				long rcdVal = Long.parseLong(calculateList.get(2));//売上額の数値化
 				long branchVal = branchCalculateMap.get(calculateList.get(0)) + rcdVal ;//売上額(累計)の数値化
 
@@ -113,20 +116,21 @@ public class CalculateSales {
 				commodityCalculateMap.put(calculateList.get(1),calVal);
 				//合計金額が10桁超えた場合
 				if(branchVal > 1000000000 || calVal > 1000000000){
-
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
         	}catch(IOException e){
-        		System.out.println("予期せぬエラーです");
+        		System.out.println("予期せぬエラーが発生しました");
     			return;
+
         	}finally{
         		try{
+
         			if(rcdbr != null){
         				rcdbr.close();
         			}
         		}catch(IOException e){
-        			System.out.println("予期せぬエラーです");
+        			System.out.println("予期せぬエラーが発生しました");
         			return;
         		}
         	}
@@ -162,7 +166,7 @@ public class CalculateSales {
 				calculateMap.put(items[0], (long) 0);
 			}
 		}catch(IOException e){
-			System.out.println("予期せぬエラーです");
+			System.out.println("予期せぬエラーが発生しました");
 			return false;
 		}finally{
 			try{
@@ -170,7 +174,7 @@ public class CalculateSales {
 					br.close();
 				}
 			}catch(IOException e){
-				System.out.println("予期せぬエラーです");
+				System.out.println("予期せぬエラーが発生しました");
 				return false;
 			}
 		}
