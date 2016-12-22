@@ -27,7 +27,7 @@ public class CalculateSales {
 		Map<String, Long> commodityCalculateMap = new HashMap<String,Long>();
 
 		if(args.length !=1){
-			return;
+			System.exit(1);
 		}
 		//支店定義ファイルが存在しません
 		File branchfile = new File(args[0], "branch.lst");
