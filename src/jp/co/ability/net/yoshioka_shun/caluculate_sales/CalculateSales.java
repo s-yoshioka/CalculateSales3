@@ -26,6 +26,9 @@ public class CalculateSales {
 		//集計用のmapを作る(商品)
 		Map<String, Long> commodityCalculateMap = new HashMap<String,Long>();
 
+		if(args.length !=1){
+			return;
+		}
 		//支店定義ファイルが存在しません
 		File branchfile = new File(args[0], "branch.lst");
 		if(!branchfile.exists()){
@@ -59,6 +62,10 @@ public class CalculateSales {
     			rcdList.add(files[i].getName());
     		}
     	}
+    	if((rcdList.get(0)) != ("^\\D$")){
+    		return;
+    	}
+
     	//連番チェック(リストを回す)
     	for(int i = 0; i < rcdList.size() ; i++){
     		String rcdName = rcdList.get(i);
@@ -126,12 +133,10 @@ public class CalculateSales {
     	}
     	String fileName = args[0] + File.separator + "branch.out";
     	if(!createFile(fileName, branchMap, branchCalculateMap)){
-    		System.out.println("予期せぬエラーが発生しました");
     		return;
     	}
     	String comfileName = args[0] + File.separator + "commodity.out";
     	if(!createFile(comfileName,commodityMap,commodityCalculateMap)){
-    		System.out.println("予期せぬエラーが発生しました");
     		return;
     	}
 	}
