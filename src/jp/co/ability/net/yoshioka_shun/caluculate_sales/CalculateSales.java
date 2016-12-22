@@ -43,79 +43,20 @@ public class CalculateSales {
 			return;
 		}
 
+		String branchListFile = args[0] + File.separator + "branch.lst";
+    	if(!readFile(branchListFile,branchMap,branchCalculateMap,"^\\d{3}$","支店定義ファイル")){
+    		System.out.println("予期せぬエラーが発生しました");
+    		return;
 
-		String branchFile = args[0] + File.separator + "branch.lst";
-		createFile(branchFile,branchMap,branchCalculateMap);
-		String comFile = args[0] + File.separator + "commodity.lst";
-		createFile(comFile,commodityMap,commodityCalculateMap);
+    	}
 
-	//public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, String> calculateMap ){
-
-		try{
-			File file =new File(args[0],"branch.lst");
-			FileReader fr = new FileReader(file);
-			br = new BufferedReader(fr);
-
-			String str;
-			while((str = br.readLine()) != null){
-				String[] items =str.split(",", 0);
-
-				//ファイルフォーマットが不正の場合
-				if(!items[0].matches("^\\d{3}$") || items.length !=2){
-					System.out.println("支店定義ファイルのフォーマットが不正です");
-					return;
-				}
-
-				//branchMapにputする
-				branchMap.put(items[0], items[1]);
-				//集計map(支店)にputする
-				branchCalculateMap.put(items[0], (long) 0);
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーです");
-			return;
-		}finally{
-			try{
-				if(br != null){
-					br.close();
-				}
-			}catch(IOException e){
-				System.out.println("予期せぬエラーです");
-				return;
-			}
-		}
+    	String commodityListFile = args[0] + File.separator + "commodity.lst";
+    	if(!readFile(commodityListFile,commodityMap,commodityCalculateMap,"^\\w{8}$","商品定義ファイル")){
+    		System.out.println("予期せぬエラーが発生しました");
+    		return;
+    	}
 
 
-		try{
-			combr = new BufferedReader(new FileReader(commodityfile));
-
-			String str;
-			while((str = combr.readLine()) != null){
-				 String[] items =str.split(",",0);
-
-				 //ファイルフォーマットが不正の場合
-				 if(!items[0].matches("^\\w{8}$") && (items.length !=2)){
-					 System.out.println("商品定義ファイルのフォーマットが不正です");
-					 return;
-				 }
-					// commodityMapにputする
-				 commodityMap.put(items[0], items[1]);
-
-				 commodityCalculateMap.put(items[0],(long) 0);
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーです");
-			return;
-		}finally{
-			try{
-				if(combr != null){
-					combr.close();
-				}
-			}catch(IOException e){
-					System.out.println("予期せぬエラーです");
-					return;
-			}
-		}
 
 
 		// ディレクトリの一覧を取得する
@@ -214,14 +155,67 @@ public class CalculateSales {
     	}
 
     	String fileName = args[0] + File.separator + "branch.out";
-    	createFile(fileName, branchMap, branchCalculateMap);
+    	if(!createFile(fileName, branchMap, branchCalculateMap)){
+    		System.out.println("予期せぬエラーが発生しました");
+    		return;
+    	}
 
     	String comfileName = args[0] + File.separator + "commodity.out";
-    	createFile(comfileName,commodityMap,commodityCalculateMap);
+    	if(!createFile(comfileName,commodityMap,commodityCalculateMap)){
+    		System.out.println("予期せぬエラーが発生しました");
+    		return;
+    	}
+
 	}
 
 
+	public static boolean readFile(String fileName, Map<String, String> nameMap, Map<String, Long> calculateMap, String regax, String errorFile ){
+
+		BufferedReader br = null;
+
+		try{
+			File file =new File(fileName);
+			FileReader fr = new FileReader(file);
+			br = new BufferedReader(fr);
+
+			String str;
+			while((str = br.readLine()) != null){
+				String[] items =str.split(",", 0);
+
+				//ファイルフォーマットが不正の場合
+				if(!items[0].matches(regax) || items.length !=2){
+					System.out.println(errorFile + "のフォーマットが不正です");
+					return false;
+				}
+
+				//branchMapにputする
+				nameMap.put(items[0], items[1]);
+				//集計map(支店)にputする
+				calculateMap.put(items[0], (long) 0);
+			}
+		}catch(IOException e){
+			System.out.println("予期せぬエラーです");
+			return false;
+		}finally{
+			try{
+				if(br != null){
+					br.close();
+				}
+			}catch(IOException e){
+				System.out.println("予期せぬエラーです");
+				return false;
+			}
+		}
+		return true;
+
+
+	}
+
 	public static boolean createFile(String fileName, Map<String, String> nameMap, Map<String, Long> calculateMap ){
+
+
+
+
 		// List 生成 (ソート用)
     	List<Entry<String,Long>> entries =
 				new ArrayList<Map.Entry<String,Long>>(calculateMap.entrySet());
